@@ -1,1 +1,3 @@
 MonuSeg/
+UNET_Model/U-Net-Best.h5
+UNET_Model/model-tgs-salt.h5
