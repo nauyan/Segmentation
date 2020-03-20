@@ -12,5 +12,7 @@ Three Segmentation models have been trained:
 ![Loss for Train and Test Set](./UNET_Model/train_loss.png)
 
 ## SegNet
+Results will be published soon
 
 ## DeepLab v3
+Results will be published soon
