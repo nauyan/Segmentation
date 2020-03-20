@@ -6,6 +6,9 @@ Dataset can be downloaded from [Grand Challenge Webiste](https://monuseg.grand-c
 
 ## U-Net
 
+![Dice Score for Train and Test Set](./UNET_Model/train_dice.png)
+![Loss for Train and Test Set](./UNET_Model/train_loss.png)
+
 ## SegNet
 
 ## DeepLab v3
