@@ -141,9 +141,9 @@ for x in (ids_train_x):
     mask = resize(mask, (im_width, im_height, 1), mode = 'constant', preserve_range = True)
     # Save images
     #X_train[count] = x_img/255.0 16777216.0
-    X_train[count] = x_img
+    X_train[count] = x_img/16777216.0
     #y_train[count] = mask/255.0
-    y_train[count] = mask
+    y_train[count] = mask/255.0
     count = count+1
 
 print("Loading Testing Data")
@@ -159,16 +159,16 @@ for x in (ids_test_x):
     mask = resize(mask, (im_width, im_height, 1), mode = 'constant', preserve_range = True)
     # Save images
     #X_test[count] = x_img/255.0 16777216.0
-    X_test[count] = x_img
+    X_test[count] = x_img/16777216.0
     #y_test[count] = mask/255.0
-    y_test[count] = mask
+    y_test[count] = mask/255.0
     count = count+1
 
 
 input_img = Input((im_width, im_height, 3), name='img')
 model = get_unet(input_img, n_filters=32, dropout=0.05, batchnorm=True)
 #model.compile(optimizer=sgd(), loss="binary_crossentropy", metrics=["accuracy"])
-model.compile(optimizer=Adam(1e-5, amsgrad=True, clipnorm=5.0), loss=dice_coef_loss, metrics=[dice_coef])
+model.compile(optimizer=Adam(), loss=dice_coef_loss, metrics=[dice_coef])
 print (model.summary())
 #nadam(lr=1e-5)
 #Adam(1e-5, amsgrad=True, clipnorm=5.0)
