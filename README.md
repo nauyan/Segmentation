@@ -1,4 +1,4 @@
-# Repository for [A Multi-organ Nucleus Segmentation Challenge](https://ieeexplore.ieee.org/document/8880654).
+## Repository for [A Multi-organ Nucleus Segmentation Challenge](https://ieeexplore.ieee.org/document/8880654).
 
 <p align="center">Note: This project is a work-in-progress, and not quite ready for real usage.<br>If you're interested in using it, feel free to ⭐️ the repo so we know!</p>
 
