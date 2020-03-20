@@ -4,7 +4,7 @@
 
 Dataset can be downloaded from [Grand Challenge Webiste](https://monuseg.grand-challenge.org/)
 
-3 Segmentation models would be trained:
+Three Segmentation models have been trained:
 
 ## U-Net
 
