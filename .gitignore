@@ -1,3 +1,8 @@
 MonuSeg/
 UNET_Model/U-Net-Best.h5
 UNET_Model/model-tgs-salt.h5
+<<<<<<< HEAD
+SegNet_Model/U-Net-Best.h5
+SegNet_Model/SegNet-Best.h5
+=======
+>>>>>>> refs/remotes/origin/master

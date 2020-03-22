@@ -189,8 +189,17 @@ for x in (ids_train_x):
     #mask = mask[:,:,1]
     mask = resize(mask, (im_width, im_height, 3), mode = 'constant', preserve_range = True)
     # Save images
+<<<<<<< HEAD
     #X_train[count] = x_img/255.0 16777216.0 f1_m
     X_train[count] = x_img/255.0
+=======
+    #X_train[count] = x_img/255.0 16777216.0
+<<<<<<< HEAD
+    X_train[count] = x_img/255.0
+=======
+    X_train[count] = x_img/16777216.0
+>>>>>>> refs/remotes/origin/master
+>>>>>>> 0386883839b5f6d18a2b5557bbace601ba7ff392
     #y_train[count] = mask/255.0
     y_train[count] = mask/255.0
     count = count+1
@@ -209,7 +218,15 @@ for x in (ids_test_x):
     mask = resize(mask, (im_width, im_height, 3), mode = 'constant', preserve_range = True)
     # Save images
     #X_test[count] = x_img/255.0 16777216.0
+<<<<<<< HEAD
     X_test[count] = x_img/255.0
+=======
+<<<<<<< HEAD
+    X_test[count] = x_img/255.0
+=======
+    X_test[count] = x_img/16777216.0
+>>>>>>> refs/remotes/origin/master
+>>>>>>> 0386883839b5f6d18a2b5557bbace601ba7ff392
     #y_test[count] = mask/255.0
     y_test[count] = mask/255.0
     count = count+1
