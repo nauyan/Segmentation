@@ -3,6 +3,7 @@ import random
 #import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from PIL import Image 
 #plt.style.use("ggplot")
 #%matplotlib inline
 
@@ -22,7 +23,7 @@ from keras.layers.convolutional import Conv2D, Conv2DTranspose
 from keras.layers.pooling import MaxPooling2D, GlobalMaxPool2D
 from keras.layers.merge import concatenate, add
 from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
-from keras.optimizers import Adam, nadam,sgd
+from keras.optimizers import Adam, nadam,SGD
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 
 def iou_coef(y_true, y_pred, smooth=1):
@@ -50,6 +51,19 @@ def jaccard_distance_loss(y_true, y_pred, smooth=100):
     jac = (intersection + smooth) / (sum_ - intersection + smooth)
     return (1 - jac) * smooth
 
+def iou(y_true, y_pred, smooth=1.):
+    y_true_f = K.flatten(y_true)
+    y_pred_f = K.flatten(y_pred)
+    intersection = K.sum(y_true_f * y_pred_f)
+    return (intersection + smooth) / (K.sum(y_true_f) + K.sum(y_pred_f) - intersection + smooth)
+    
+def dice_coef(y_true, y_pred, smooth=1.):
+    y_true_f = K.flatten(y_true)
+    y_pred_f = K.flatten(y_pred)
+    intersection = K.sum(y_true_f * y_pred_f)
+    return (2. * intersection + smooth) / (
+                K.sum(y_true_f) + K.sum(y_pred_f) + smooth)
+
 def recall_m(y_true, y_pred):
     true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
     possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
@@ -67,7 +81,7 @@ def f1_m(y_true, y_pred):
     recall = recall_m(y_true, y_pred)
     return 2*((precision*recall)/(precision+recall+K.epsilon()))
 
-def dice_coef(y_true, y_pred, smooth=1):
+def dice_coef_2(y_true, y_pred, smooth=1):
   intersection = K.sum(y_true * y_pred, axis=[1,2,3])
   union = K.sum(y_true, axis=[1,2,3]) + K.sum(y_pred, axis=[1,2,3])
   dice = K.mean((2. * intersection + smooth)/(union + smooth), axis=0)
@@ -146,7 +160,7 @@ def get_unet(input_img, n_filters = 16, dropout = 0.1, batchnorm = True):
     u9 = Dropout(dropout)(u9)
     c9 = conv2d_block(u9, n_filters * 1, kernel_size = 3, batchnorm = batchnorm)
     
-    outputs = Conv2D(3, (1, 1), activation='sigmoid')(c9)
+    outputs = Conv2D(1, (1, 1), activation='sigmoid')(c9)
     model = Model(inputs=[input_img], outputs=[outputs])
     return model
 
@@ -171,36 +185,38 @@ ids_test_y = glob.glob(TEST_PATH_GT)
 print("No. of testing images = ", len(ids_test_x))
 
 X_train = np.zeros((len(ids_train_x), im_height, im_width, 3), dtype=np.float32)
-y_train = np.zeros((len(ids_train_y), im_height, im_width, 3), dtype=np.float32)
+y_train = np.zeros((len(ids_train_y), im_height, im_width, 1), dtype=np.float32)
 
 X_test = np.zeros((len(ids_test_x), im_height, im_width, 3), dtype=np.float32)
-y_test = np.zeros((len(ids_test_y), im_height, im_width, 3), dtype=np.float32)
+y_test = np.zeros((len(ids_test_y), im_height, im_width, 1), dtype=np.float32)
 
 print("Loading Training Data")
 count =0 
 for x in (ids_train_x):
     y = glob.glob(x[:-4]+'*')[0]
     #print(x,y)
-    img = load_img(x)
-    x_img = img_to_array(img)
-    x_img = resize(x_img, (im_width, im_height, 3), mode = 'constant', preserve_range = True)
+    #img = load_img(x)
+    #img = Image.open(x)
+    #img = img.resize((1024,1024))
+    #x_img = img_to_array(img)
+    x_img = img_to_array(load_img(x, color_mode='rgb', target_size=[1024,1024]))
+    #x_img = img_to_array(img)
+    #x_img = resize(x_img, (im_width, im_height, 3), mode = 'constant', preserve_range = True)
     # Load masks
-    mask = img_to_array(load_img(y))
+    mask = img_to_array(load_img(y, color_mode='grayscale', target_size=[1024,1024]))
+    #mask = Image.open(y)
+    #mask = mask.resize((1024,1024))
+    #mask = img_to_array(img)
+    #mask = img_to_array(load_img(y))
     #mask = mask[:,:,1]
-    mask = resize(mask, (im_width, im_height, 3), mode = 'constant', preserve_range = True)
+    #mask = resize(mask, (im_width, im_height, 3), mode = 'constant', preserve_range = True)
     # Save images
-<<<<<<< HEAD
     #X_train[count] = x_img/255.0 16777216.0 f1_m
     X_train[count] = x_img/255.0
-=======
-    #X_train[count] = x_img/255.0 16777216.0
-<<<<<<< HEAD
-    X_train[count] = x_img/255.0
-=======
-    X_train[count] = x_img/16777216.0
->>>>>>> refs/remotes/origin/master
->>>>>>> 0386883839b5f6d18a2b5557bbace601ba7ff392
     #y_train[count] = mask/255.0
+    #mask = mask/255.0
+    #mask[mask > 0.5] = 1
+    #mask[mask <= 0.5] = 0 
     y_train[count] = mask/255.0
     count = count+1
 
@@ -209,38 +225,45 @@ count =0
 for x in (ids_test_x):
     y = glob.glob(x[:-4]+'*')[0]
     #print(x,y)
-    img = load_img(x)
-    x_img = img_to_array(img)
-    x_img = resize(x_img, (im_width, im_height, 3), mode = 'constant', preserve_range = True)
+    #img = Image.open(x)
+    #img = img.resize((1024,1024))
+    #x_img = img_to_array(img)
+    x_img = img_to_array(load_img(x, color_mode='rgb', target_size=[1024,1024]))
+    #img = load_img(x)
+    #x_img = img_to_array(img)
+    #x_img = resize(x_img, (im_width, im_height, 3), mode = 'constant', preserve_range = True)
     # Load masks
-    mask = img_to_array(load_img(y))
+    mask = img_to_array(load_img(y, color_mode='grayscale', target_size=[1024,1024]))
+    #mask = Image.open(y)
+    #mask = Image.open(y)#.convert('L')
+    #mask = ImageOps.invert(mask)
+    #mask = np.array(mask)
+    #mask[mask > 0] = 1
+    #mask = mask.resize((1024,1024))
+    #mask = img_to_array(img)
+    #mask = img_to_array(load_img(y))
     #mask = mask[:,:,1]
-    mask = resize(mask, (im_width, im_height, 3), mode = 'constant', preserve_range = True)
+    #mask = resize(mask, (im_width, im_height, 3), mode = 'constant', preserve_range = True)
     # Save images
     #X_test[count] = x_img/255.0 16777216.0
-<<<<<<< HEAD
     X_test[count] = x_img/255.0
-=======
-<<<<<<< HEAD
-    X_test[count] = x_img/255.0
-=======
-    X_test[count] = x_img/16777216.0
->>>>>>> refs/remotes/origin/master
->>>>>>> 0386883839b5f6d18a2b5557bbace601ba7ff392
     #y_test[count] = mask/255.0
+    #mask = mask/255.0
+    #mask[mask > 0.5] = 1
+    #mask[mask <= 0.5] = 0 
     y_test[count] = mask/255.0
     count = count+1
   
  
 input_img = Input((im_width, im_height, 3), name='img')
 model = get_unet(input_img, n_filters=32, dropout=0.05, batchnorm=True)
-#model.compile(optimizer=sgd(), loss="binary_crossentropy"dice_coef_loss, metrics=["accuracy"]) # ,f1_m,iou_coef,dice_coef
-model.compile(optimizer=nadam(lr=1e-5), loss=jaccard_distance_loss, metrics=['acc',f1_m,iou_coef,dice_coef])
+#model.compile(optimizer=sgd(), loss="binary_crossentropy"dice_coef_loss,jaccard_distance_loss metrics=["accuracy"]) # ,f1_m,iou_coef,dice_coef
+model.compile(optimizer=SGD(lr=1e-5, momentum=0.95), loss=jaccard_distance_loss, metrics=[iou,dice_coef])
 print (model.summary())
 #nadam(lr=1e-5)
 #Adam(1e-5, amsgrad=True, clipnorm=5.0)
 #Adam()
-
+#SGD(lr=1e-5, momentum=0.95)
 callbacks = [
     EarlyStopping(patience=10, verbose=1),
     ReduceLROnPlateau(factor=0.1, patience=5, min_lr=0.00001, verbose=1),
@@ -274,14 +297,14 @@ plt.savefig('./train_dice.png')
 
 plt.figure(figsize=(8, 8))
 plt.title("Learning curve")
-plt.plot(results.history["iou_coef"], label="iou_coef")
-plt.plot(results.history["val_iou_coef"], label="val_iou_coef")
-plt.plot( np.argmax(results.history["val_iou_coef"]), np.max(results.history["val_iou_coef"]), marker="x", color="r", label="best model")
+plt.plot(results.history["iou"], label="iou")
+plt.plot(results.history["val_iou"], label="val_iou")
+plt.plot( np.argmax(results.history["val_iou"]), np.max(results.history["val_iou"]), marker="x", color="r", label="best model")
 plt.xlabel("Epochs")
-plt.ylabel("iou_coef")
+plt.ylabel("iou")
 plt.legend();
-plt.savefig('./train_iou_coef.png')
-
+plt.savefig('./train_iou.png')
+"""
 
 plt.figure(figsize=(8, 8))
 plt.title("Learning curve")
@@ -302,4 +325,4 @@ plt.xlabel("Epochs")
 plt.ylabel("F1-Score")
 plt.legend();
 plt.savefig('./train_F1.png')
-""""""
+"""
