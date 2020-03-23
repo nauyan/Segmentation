@@ -73,7 +73,7 @@ print (model.summary())
 callbacks = [
     EarlyStopping(patience=10, verbose=1),
     ReduceLROnPlateau(factor=0.1, patience=5, min_lr=0.00001, verbose=1),
-    ModelCheckpoint('./Weights/UNETU-Net-Best.h5', verbose=1, save_best_only=True, save_weights_only=False)
+    ModelCheckpoint('./Weights/UNET/U-Net-Best.h5', verbose=1, save_best_only=True, save_weights_only=False)
 ]
 
 print(X_train.shape, y_train.shape)
