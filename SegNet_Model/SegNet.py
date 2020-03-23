@@ -4,7 +4,7 @@ from keras.layers.core import Activation, Reshape
 from keras.layers.convolutional import Convolution2D
 from keras.layers.normalization import BatchNormalization
 from keras import backend as K
-from layers import MaxPoolingWithArgmax2D, MaxUnpooling2D
+from .layers import MaxPoolingWithArgmax2D, MaxUnpooling2D
 import numpy as np
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 from skimage.transform import resize
@@ -155,6 +155,8 @@ def get_segnet(
 
     return model
 
+
+"""
 # Set some parameters
 im_width = 256
 im_height = 256
@@ -262,6 +264,6 @@ plt.xlabel("Epochs")
 plt.ylabel("Dice Coeff")
 plt.legend();
 plt.savefig('./train_dice.png')
-
+"""
 
 
