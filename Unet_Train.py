@@ -10,8 +10,8 @@ from keras.layers import Input
 from Utils.LossFunctions import jaccard_distance_loss,dice_coef_loss
 from Utils.MetricFunctions import iou,dice_coef
 
-from UNET_Model.U_Net import get_unet
-from SegNet_Model.SegNet import get_segnet
+from Model_UNET.U_Net import get_unet
+from Model_SegNet.SegNet import get_segnet
 
 import argparse
 
