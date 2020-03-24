@@ -7,9 +7,12 @@ Dataset can be downloaded from [Grand Challenge Webiste](https://monuseg.grand-c
 Three Segmentation models have been trained:
 
 ## U-Net
-![Dice Score for Train and Test Set](./UNET_Model/train_dice.png)
-![Loss for Train and Test Set](./UNET_Model/train_loss.png)
+![IOU Score for Train and Test Set](./Plots/UNET/train_iou.png)
+![Dice Score for Train and Test Set](./Plots/UNET/train_dice.png)
+![Loss for Train and Test Set](./Plots/UNET/train_loss.png)
 ## SegNet
-Results will be published soon
+![IOU Score for Train and Test Set](./Plots/SEGNET/train_iou.png)
+![Dice Score for Train and Test Set](./Plots/SEGNET/train_dice.png)
+![Loss for Train and Test Set](./Plots/SEGNET/train_loss.png)
 ## DeepLab v3
 Results will be published soon
