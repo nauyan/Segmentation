@@ -12,8 +12,9 @@ from Utils.MetricFunctions import iou,dice_coef
 
 from Model_Unet.U_Net import get_unet
 from Model_SegNet.SegNet import get_segnet
-
+from Model_Deeplab.Deeplab import Deeplabv3
 import argparse
+import tensorflow as tf
 
 parser = argparse.ArgumentParser(description='Simple training script for training a U-Net network.')
 parser.add_argument('--TRAIN_PATH_IMAGES',   help='Path to Training Images', type=str, default='./MonuSeg/Training/TissueImages/*')
@@ -85,16 +86,18 @@ if args.Model == "UNET":
 
 if args.Model == "SEGNET":
     print("Loading SEGNET Model")
-    model = get_segnet((im_width, im_height, 3),
+    model = get_segnet((im_width, im_height, 3))
         #n_labels=3,
-        kernel=3,
-        pool_size=(2, 2),
-        output_mode="softmax")
-    model.compile(optimizer=SGD(lr=1e-5, momentum=0.95), loss=jaccard_distance_loss, metrics=[iou,dice_coef])
+        #kernel=3,
+        #pool_size=(2, 2),
+        #output_mode="softmax")
+    model.compile(optimizer=SGD(lr=1e-5, momentum=0.95), loss=dice_coef_loss, metrics=[iou,dice_coef])
 
 if args.Model == "DEEPLAB":  
-   print("DeepLab")
-   print("Loading DEEPLAB Model")
+    print("Loading DEEPLAB Model")
+    model = Deeplabv3(weights=None, input_tensor=None, input_shape=(im_width, im_height, 3), classes=1, backbone='mobilenetv2',
+               OS=16, alpha=1., activation=None)
+    model.compile(optimizer=tf.keras.optimizers.Adam(), loss="binary_crossentropy", metrics=[iou,dice_coef])
  
 print("Compiling Model")
 #model.compile(optimizer=sgd(), loss="binary_crossentropy"dice_coef_loss,jaccard_distance_loss metrics=["accuracy"]) # ,f1_m,iou_coef,dice_coef

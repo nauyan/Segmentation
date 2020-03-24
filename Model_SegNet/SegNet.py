@@ -1,4 +1,54 @@
 from keras.models import Model
+from keras.layers import Activation,Input,ZeroPadding2D,Cropping2D
+from .custom_layers import MaxPoolingWithIndices,UpSamplingWithIndices,CompositeConv
+#import config as cf
+
+def get_segnet(image_shape,):
+    padding=((0,0),(0,0))
+    #image_shape=(1024,1024,3)
+    num_classes = 1
+    inputs=Input(shape=image_shape)
+
+    x = ZeroPadding2D(padding)(inputs)
+
+    x=CompositeConv(x,2,64)
+    x,argmax1=MaxPoolingWithIndices(pool_size=2,strides=2)(x)
+    
+    x=CompositeConv(x,2,64)
+    x,argmax2=MaxPoolingWithIndices(pool_size=2,strides=2)(x)
+    
+    x=CompositeConv(x,3,64)
+    x,argmax3=MaxPoolingWithIndices(pool_size=2,strides=2)(x)
+
+    x=CompositeConv(x,3,64)
+    x,argmax4=MaxPoolingWithIndices(pool_size=2,strides=2)(x)
+
+    x=CompositeConv(x,3,64)
+    x,argmax5=MaxPoolingWithIndices(pool_size=2,strides=2)(x)
+
+    x=UpSamplingWithIndices()([x,argmax5])
+    x=CompositeConv(x,3,64)
+
+    x=UpSamplingWithIndices()([x,argmax4])
+    x=CompositeConv(x,3,64)
+
+    x=UpSamplingWithIndices()([x,argmax3])
+    x=CompositeConv(x,3,64)
+
+    x=UpSamplingWithIndices()([x,argmax2])
+    x=CompositeConv(x,2,64)
+    
+    x=UpSamplingWithIndices()([x,argmax1])
+    x=CompositeConv(x,2,[64,num_classes])
+
+    x=Activation('softmax')(x)
+
+    y=Cropping2D(padding)(x)
+    my_model=Model(inputs=inputs,outputs=y)
+    
+    return my_model
+"""
+from keras.models import Model
 from keras.layers import Input
 from keras.layers.core import Activation, Reshape
 from keras.layers.convolutional import Convolution2D
@@ -7,7 +57,7 @@ from keras.layers.normalization import BatchNormalization
 from .layers import MaxPoolingWithArgmax2D, MaxUnpooling2D
 
 
-"""
+
 from keras import backend as K
 from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 
@@ -19,7 +69,7 @@ def dice_coef(y_true, y_pred, smooth=1):
 
 def dice_coef_loss(y_true, y_pred):
     return 1 - dice_coef(y_true, y_pred)
-"""
+
 def get_segnet(
         input_shape,
         #n_labels,
@@ -154,7 +204,7 @@ def get_segnet(
     return model
 
 
-"""
+
 # Set some parameters
 im_width = 256
 im_height = 256
