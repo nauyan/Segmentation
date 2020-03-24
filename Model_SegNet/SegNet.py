@@ -3,31 +3,26 @@ from keras.layers import Input
 from keras.layers.core import Activation, Reshape
 from keras.layers.convolutional import Convolution2D
 from keras.layers.normalization import BatchNormalization
-from keras import backend as K
+
 from .layers import MaxPoolingWithArgmax2D, MaxUnpooling2D
-import numpy as np
-from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
-from skimage.transform import resize
-from keras.optimizers import Adam, nadam,sgd
+
+
+"""
+from keras import backend as K
 from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
-import matplotlib.pyplot as plt
 
 def dice_coef(y_true, y_pred, smooth=1):
-        """
-        Dice = (2*|X & Y|)/ (|X|+ |Y|)=  2*sum(|A*B|)/(sum(A^2)+sum(B^2))
-        ref: https://arxiv.org/pdf/1606.04797v1.pdf
-        """
-        y_true = K.flatten(K.one_hot(K.cast(y_true, 'int32'), num_classes=3))
+        y_true = K.flatten(K.one_hot(K.cast(y_true, 'int32'), num_classes=2))
         y_pred = K.flatten(y_pred)
         intersection = K.sum(K.abs(y_true * y_pred), axis=-1)
         return (2. * intersection + smooth) / (K.sum(K.square(y_true), -1) + K.sum(K.square(y_pred), -1) + smooth)
 
 def dice_coef_loss(y_true, y_pred):
     return 1 - dice_coef(y_true, y_pred)
-
+"""
 def get_segnet(
         input_shape,
-        n_labels,
+        #n_labels,
         kernel=3,
         pool_size=(2, 2),
         output_mode="softmax"):
@@ -142,11 +137,14 @@ def get_segnet(
     conv_25 = BatchNormalization()(conv_25)
     conv_25 = Activation("relu")(conv_25)
 
-    conv_26 = Convolution2D(n_labels, (1, 1), padding="valid")(conv_25)
+    #conv_26 = Convolution2D(n_labels, (1, 1), padding="valid")(conv_25)
+    conv_26 = Convolution2D(1, (1, 1), padding="valid")(conv_25)
     conv_26 = BatchNormalization()(conv_26)
     conv_26 = Reshape(
-            (input_shape[0]*input_shape[1], n_labels),
-            input_shape=(input_shape[0], input_shape[1], n_labels))(conv_26)
+            #(input_shape[0],input_shape[1], n_labels),
+            (input_shape[0],input_shape[1], 1),
+            #input_shape=(input_shape[0], input_shape[1], n_labels))(conv_26)
+            input_shape=(input_shape[0], input_shape[1], 1))(conv_26)
 
     outputs = Activation(output_mode)(conv_26)
     print("Build decoder done..")
@@ -163,6 +161,10 @@ im_height = 256
 border = 5
 
 
+import numpy as np
+import glob
+from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
+from keras.optimizers import Adam, nadam,SGD
 
 TRAIN_PATH_IMAGES = '../MonuSeg/Training/TissueImages/*'
 TRAIN_PATH_GT = '../MonuSeg/Training/GroundTruth/*'
@@ -187,48 +189,35 @@ print("Loading Training Data")
 count =0 
 for x in (ids_train_x):
     y = glob.glob(x[:-4]+'*')[0]
-    #print(x,y)
-    img = load_img(x)
-    x_img = img_to_array(img)
-    x_img = resize(x_img, (im_width, im_height, 3), mode = 'constant', preserve_range = True)
+    x_img = img_to_array(load_img(x, color_mode='rgb', target_size=[im_width,im_height]))
     # Load masks
-    mask = img_to_array(load_img(y))
-    mask = resize(mask, (im_width, im_height, 1), mode = 'constant', preserve_range = True)
-    # Save images
-    #X_train[count] = x_img/255.0 16777216.0
+    mask = img_to_array(load_img(y, color_mode='grayscale', target_size=[im_width,im_height]))
     X_train[count] = x_img/255.0
-    #y_train[count] = mask/255.0
     y_train[count] = mask/255.0
     count = count+1
+
 
 print("Loading Testing Data")
 count =0 
 for x in (ids_test_x):
     y = glob.glob(x[:-4]+'*')[0]
-    #print(x,y)
-    img = load_img(x)
-    x_img = img_to_array(img)
-    x_img = resize(x_img, (im_width, im_height, 3), mode = 'constant', preserve_range = True)
+    x_img = img_to_array(load_img(x, color_mode='rgb', target_size=[im_width,im_height]))
     # Load masks
-    mask = img_to_array(load_img(y))
-    mask = resize(mask, (im_width, im_height, 1), mode = 'constant', preserve_range = True)
-    # Save images
-    #X_test[count] = x_img/255.0 16777216.0
+    mask = img_to_array(load_img(y, color_mode='grayscale', target_size=[im_width,im_height]))
     X_test[count] = x_img/255.0
-    #y_test[count] = mask/255.0
     y_test[count] = mask/255.0
     count = count+1
 
 
 input_img = Input((im_width, im_height, 3), name='img')
 model = get_segnet((im_width, im_height, 3),
-        n_labels=3,
+        #n_labels=1,
         kernel=3,
         pool_size=(2, 2),
         output_mode="softmax")
 # model = get_unet(input_img, n_filters=32, dropout=0.05, batchnorm=True)
-#model.compile(optimizer=sgd(), loss="binary_crossentropy", metrics=["accuracy"])
-model.compile(optimizer=sgd(), loss=dice_coef_loss, metrics=[dice_coef])
+#model.compile(optimizer=sgd(), loss="binary_crossentropy"dice_coef_loss, metrics=["accuracy"])
+model.compile(optimizer=SGD(), loss="binary_crossentropy", metrics=["acc"])
 print (model.summary())
 #nadam(lr=1e-5)
 #Adam(1e-5, amsgrad=True, clipnorm=5.0)
@@ -244,7 +233,7 @@ print(X_train.shape, y_train.shape)
 print(X_test.shape, y_test.shape)
 results = model.fit(X_train, y_train, batch_size=1, verbose=1, epochs=50, callbacks=callbacks,\
                     validation_data=(X_test, y_test))
-               
+              
 plt.figure(figsize=(8, 8))
 plt.title("Learning curve")
 plt.plot(results.history["loss"], label="loss")

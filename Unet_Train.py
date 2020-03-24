@@ -86,11 +86,11 @@ if args.Model == "UNET":
 if args.Model == "SEGNET":
     print("Loading SEGNET Model")
     model = get_segnet((im_width, im_height, 3),
-        n_labels=1,
+        #n_labels=3,
         kernel=3,
         pool_size=(2, 2),
         output_mode="softmax")
-    model.compile(optimizer=SGD(), loss=dice_coef_loss, metrics=[iou,dice_coef])
+    model.compile(optimizer=SGD(lr=1e-5, momentum=0.95), loss=jaccard_distance_loss, metrics=[iou,dice_coef])
 
 if args.Model == "DEEPLAB":  
    print("DeepLab")
@@ -109,7 +109,7 @@ print (model.summary())
 callbacks = [
     EarlyStopping(patience=10, verbose=1),
     ReduceLROnPlateau(factor=0.1, patience=5, min_lr=0.00001, verbose=1),
-    ModelCheckpoint('./Weights/'+str(args.Model)+'/U-Net-Best.h5', verbose=1, save_best_only=True, save_weights_only=False)
+    ModelCheckpoint('./Weights/'+str(args.Model)+'/'+str(args.Model)+'-Best.h5', verbose=1, save_best_only=True, save_weights_only=False)
 ]
 
 print(X_train.shape, y_train.shape)
