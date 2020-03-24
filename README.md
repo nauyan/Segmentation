@@ -15,4 +15,7 @@ Three Segmentation models have been trained:
 ![Dice Score for Train and Test Set](./Plots/SEGNET/train_dice.png)
 ![Loss for Train and Test Set](./Plots/SEGNET/train_loss.png)
 ## DeepLab v3
-Results will be published soon
+![IOU Score for Train and Test Set](./Plots/DEEPLAB/train_iou.png)
+![Dice Score for Train and Test Set](./Plots/DEEPLAB/train_dice.png)
+![Loss for Train and Test Set](./Plots/DEEPLAB/train_loss.png)
+
