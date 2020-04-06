@@ -39,6 +39,11 @@ A training sample with segmentation mask from training set can be seen below:
 ## Trained Weights
 The trained weights can be downloaded from [google drive](https://drive.google.com/file/d/1uTFPece1j-9dUhNvFB3w_FNODzhmx5ql/view).
 
+## Visualization of Results
+ |      Tissue             | Mask  |  Predicted Mask  |
+:-------------------------:|:-------------------------:|:-------------------------:
+![](./Datasets/Samples/Test/TCGA-HT-8564-01Z-00-DX1.tif)  |  ![](./Datasets/Samples/Test/TCGA-HT-8564-01Z-00-DX1_bin_mask.png) |  ![](./Results/outputs/TCGA-HT-8564-01Z-00-DX1.jpg)
+
 ## Quantitatvie Results
 
 | Model | Loss | Accuracy | F1 Score | Dice Score |
