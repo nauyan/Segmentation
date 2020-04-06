@@ -69,7 +69,10 @@ python Test.py
 | DeeplabV3+ | 0.264 | 0.913 | 0.899 | 0.777
 
 ## Results
-Three Segmentation models have been trained:
+Three Segmentation models have been trained and the model is evaluated on three metrics namely:
+* Accuracy
+* F1-Score
+* Dice Score
 ### U-Net
 <p float="center">
 	<img src='./Results/plots/UNET/train_accuracy.png' width="430"/>
