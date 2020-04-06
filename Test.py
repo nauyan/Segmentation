@@ -2,6 +2,8 @@ import keras
 import json
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img, save_img
 import os
+from Code.network.segnet.custom_layers import MaxPoolingWithIndices,UpSamplingWithIndices,CompositeConv
+import tensorflow as tf
 
 with open('./config.json') as config_file:
     config = json.load(config_file)
@@ -9,9 +11,10 @@ with open('./config.json') as config_file:
 if config['Model']=="UNET":
     model = keras.models.load_model("./Results/weights/" + config['Model'] + "/" +config['Model']+"-Best.h5", compile=False)
 if config['Model']=="SEGNET":
-    model = keras.models.load_model("./Results/weights/" + config['Model'] + "/" +config['Model']+"-Best.h5", compile=False)
+    model = keras.models.load_model("./Results/weights/" + config['Model'] + "/" +config['Model']+"-Best.h5", compile=False,
+              custom_objects={'MaxPoolingWithIndices':MaxPoolingWithIndices})
 if config['Model']=="DEEPLAB":
-    model = keras.models.load_model("./Results/weights/" + config['Model'] + "/" +config['Model']+"-Best.h5", compile=False)
+    model = tf.keras.models.load_model("./Results/weights/" + config['Model'] + "/" +config['Model']+"-Best.h5", compile=False)
 
 #print(model.summary())
 #config['sample_test_image']
