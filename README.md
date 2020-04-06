@@ -49,8 +49,8 @@ Since the size of data set is small and was eaisly loaded into the memmory so we
 ![DeepLabV3 Architecture](https://miro.medium.com/max/1590/1*R7tiLxyeHYHMXTGJIanZiA.png)
 
 
-## Trained Weights
-The trained weights can be downloaded from [google drive](https://drive.google.com/file/d/1uTFPece1j-9dUhNvFB3w_FNODzhmx5ql/view).
+## Pre-Trained Models
+The Pre-Trained models can be downloaded from [google drive](https://drive.google.com/file/d/1uTFPece1j-9dUhNvFB3w_FNODzhmx5ql/view).
 
 ## Installation
 To get this repo work please install all the dependencies using the command below:
