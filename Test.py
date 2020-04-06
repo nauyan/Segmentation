@@ -1,6 +1,7 @@
 import keras
 import json
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img, save_img
+import os
 
 with open('./config.json') as config_file:
     config = json.load(config_file)
@@ -23,5 +24,8 @@ pred = pred.reshape(1024,1024,1)
 img_array = img_to_array(pred)
 # save the image with a new filename
 
-save_img('./Results/outputs/prediction.jpg', img_array*255.0)
-print("The Output mask is stored in ./Results/outputs/prediction.jpg")
+base=os.path.basename(config['sample_test_image'])
+fn = os.path.splitext(base)[0]
+filename = './Results/outputs/'+fn+'.jpg'
+save_img(filename, img_array*255.0)
+print("The Output mask is stored at "+ filename)
