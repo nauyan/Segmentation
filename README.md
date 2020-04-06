@@ -34,6 +34,9 @@ A training sample with segmentation mask from training set can be seen below:
 :-------------------------:|:-------------------------:
 ![](./Datasets/Samples/TCGA-RD-A8N9-01A-01-TS1.png)  |  ![](./Datasets/Samples/TCGA-RD-A8N9-01A-01-TS1_bin_mask.png)
 
+### Patch Generation
+Since the size of data set is small and was eaisly loaded into the memmory so we have created patches in online mode. . All the images of training set and test set were reshape to 1024x1024 and then patches were extracted from them. The patch dimensions comprised of **256x256** with 50% overlap among them.
+
 ## Models Diagrams
 
 ### SegNet
