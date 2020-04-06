@@ -36,6 +36,8 @@ A training sample with segmentation mask from training set can be seen below:
 :-------------------------:|:-------------------------:
 ![](./Datasets/Samples/TCGA-RD-A8N9-01A-01-TS1.png)  |  ![](./Datasets/Samples/TCGA-RD-A8N9-01A-01-TS1_bin_mask.png)
 
+## Trained Weights
+The trained weights can be downloaded from [google drive](https://drive.google.com/file/d/1uTFPece1j-9dUhNvFB3w_FNODzhmx5ql/view)
 ## Quantitatvie Results
 
 | Model | Loss | Accuracy | F1 Score | Dice Score |
