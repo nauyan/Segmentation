@@ -5,11 +5,11 @@
 ### Current Features
 
 - [ ] Model Visualization
-- [ ] Config File
+- [x] Config File
 - [x] Training Graphs
 - [x] Patch-Wise Input
 - [x] Updation of README Files
-- [ ] Inference Files
+- [x] Inference Files
 - [x] Quantitative Results
 - [ ] Visualization of Results
 - [x] Train File
