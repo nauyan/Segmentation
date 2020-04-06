@@ -112,5 +112,8 @@ Three Segmentation models have been trained and the model is evaluated on three 
   	<img src='./Results/plots/DEEPLAB/train_loss.png' width="430"/>
 </p>
 
+## Author
+`Maintainer` [Syed Nauyan Rashid](https://https://github.com/nauyan) (nauyan@hotmail.com)
+
 
 
