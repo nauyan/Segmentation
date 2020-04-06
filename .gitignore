@@ -1,0 +1,4 @@
+Datasets/MonuSeg/
+Results/weights/
+__pycache__/
+Results/weights.zip
