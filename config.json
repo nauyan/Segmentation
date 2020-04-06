@@ -1,0 +1,13 @@
+{
+  "im_width" : 1024,
+  "im_height" : 1024,
+  "TRAIN_PATH_IMAGES" : "./Datasets/MonuSeg/Training/TissueImages/*",
+  "TRAIN_PATH_GT" : "./Datasets/MonuSeg/Training/GroundTruth/",
+  "TEST_PATH_IMAGES" : "./Datasets/MonuSeg/Test/TissueImages/*",
+  "TEST_PATH_GT" : "./Datasets/MonuSeg/Test/GroundTruth/",
+  "Epochs" : 30,
+  "Batch" : 16,
+  "Model" : "UNET",
+  "patch_width" : 256 ,
+  "patch_height" : 256
+}

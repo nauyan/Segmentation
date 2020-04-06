@@ -17,8 +17,9 @@ import argparse
 import tensorflow as tf
 
 from skimage.util.shape import view_as_windows
+import json
 
-
+"""
 parser = argparse.ArgumentParser(description='Simple training script for training a U-Net network.')
 parser.add_argument('--TRAIN_PATH_IMAGES',   help='Path to Training Images', type=str, default='./Datasets/MonuSeg/Training/TissueImages/*')
 parser.add_argument('--TRAIN_PATH_GT',   help='Path to Training Ground Truth Images', type=str, default='./Datasets/MonuSeg/Training/GroundTruth/')
@@ -29,20 +30,22 @@ parser.add_argument('--im_height',   help='Height of Image', type=int, default=1
 parser.add_argument('--Epochs',   help='Epochs to Train', type=int, default=1)
 parser.add_argument('--Batch',   help='Batch Size', type=int, default=1)
 parser.add_argument('--Model',   help='Model to Train (UNET,SEGNET,DEEPLAB)', type=str, default="UNET")
-
 args = parser.parse_args()
+"""
+with open('./config.json') as config_file:
+    config = json.load(config_file)
+print (config)
+im_width = config['im_width']
+im_height = config['im_height']
+patch_width = config['patch_width']
+patch_height = config['patch_height']
+Epochs = config['Epochs']
 
-im_width = args.im_width
-im_height = args.im_height
-patch_width = 256
-patch_height = 256
-Epochs = args.Epochs
 
-
-TRAIN_PATH_IMAGES = args.TRAIN_PATH_IMAGES
-TRAIN_PATH_GT = args.TRAIN_PATH_GT
-TEST_PATH_IMAGES = args.TEST_PATH_IMAGES
-TEST_PATH_GT = args.TEST_PATH_GT
+TRAIN_PATH_IMAGES = config['TRAIN_PATH_IMAGES']
+TRAIN_PATH_GT = config['TRAIN_PATH_GT']
+TEST_PATH_IMAGES = config['TEST_PATH_IMAGES']
+TEST_PATH_GT = config['TEST_PATH_GT']
 
 
 ids_train_x = glob.glob(TRAIN_PATH_IMAGES)
@@ -68,7 +71,7 @@ count =0
 for x in (ids_train_x):
     base=os.path.basename(x)
     fn = os.path.splitext(base)[0]
-    y = glob.glob(args.TRAIN_PATH_GT+fn+'*')[0]
+    y = glob.glob(config['TRAIN_PATH_GT']+fn+'*')[0]
     x_img = img_to_array(load_img(x, color_mode='rgb', target_size=[im_width,im_height]))
     x_img = x_img/255.0
     # Load masks
@@ -93,7 +96,7 @@ count =0
 for x in (ids_test_x):
     base=os.path.basename(x)
     fn = os.path.splitext(base)[0]
-    y = glob.glob(args.TEST_PATH_GT+fn+'*')[0]
+    y = glob.glob(config['TEST_PATH_GT']+fn+'*')[0]
     x_img = img_to_array(load_img(x, color_mode='rgb', target_size=[im_width,im_height]))
     x_img = x_img/255.0
     # Load masks
@@ -120,7 +123,7 @@ y_test = np.array(y_test)
 input_img = Input((None, None, 3), name='img')
 #from tensorflow.keras.utils.vis_utils import plot_model
 
-if args.Model == "UNET":
+if config['Model'] == "UNET":
     print("Loading UNET Model")
     model = get_unet(input_img, n_filters=32, dropout=0.05, batchnorm=True)  
     # model.compile(optimizer=Adam(1e-5), loss=jaccard_distance_loss, metrics=[iou,dice_coef])
@@ -129,7 +132,7 @@ if args.Model == "UNET":
     print (model.summary())
     tf.keras.utils.plot_model(model, './Code/network/unet/unet_plot.png')
 
-if args.Model == "SEGNET":
+if config['Model'] == "SEGNET":
     print("Loading SEGNET Model")
     model = get_segnet((patch_height, patch_width, 3))
         #n_labels=3,
@@ -141,7 +144,7 @@ if args.Model == "SEGNET":
     print (model.summary())
     tf.keras.utils.plot_model(model, './Code/network/segnet/segnet_plot.png')
 
-if args.Model == "DEEPLAB":  
+if config['Model'] == "DEEPLAB":  
     print("Loading DEEPLAB Model")
     model = Deeplabv3(weights=None, input_tensor=None, input_shape=(patch_height, patch_width, 3), classes=1, backbone='xception',
                OS=16, alpha=1., activation='sigmoid')
@@ -160,27 +163,18 @@ print("Compiling Model")
 callbacks = [
     EarlyStopping(patience=10, verbose=1),
     ReduceLROnPlateau(factor=0.1, patience=5, min_lr=0.00001, verbose=1),
-    ModelCheckpoint('./Results/weights/'+str(args.Model)+'/'+str(args.Model)+'-Best.h5', verbose=1, save_best_only=True, save_weights_only=False)
+    ModelCheckpoint('./Results/weights/'+str(config['Model'])+'/'+str(config['Model'])+'-Best.h5', verbose=1, save_best_only=True, save_weights_only=False)
 ]
 X_train = X_train.reshape(-1,patch_height,patch_width,3)
 y_train = y_train.reshape(-1,patch_height,patch_width,1)
 X_test = X_test.reshape(-1,patch_height,patch_width,3)
 y_test = y_test.reshape(-1,patch_height,patch_width,1)
 
-tf.keras.preprocessing.image.save_img(
-    "./X.png", X_train[0], file_format=None, scale=True)
-temp= y_train[0]
-#print (temp)
-#temp[temp==0] = 0
-#temp[temp==255] = 128
-tf.keras.preprocessing.image.save_img(
-    "./Y.png", temp, file_format=None, scale=True)
-
 print(X_train.shape, y_train.shape)
 print(X_test.shape, y_test.shape)
 
 
-results = model.fit(X_train, y_train, batch_size=args.Batch, verbose=1, epochs=Epochs, callbacks=callbacks,\
+results = model.fit(X_train, y_train, batch_size=config['Batch'], verbose=1, epochs=Epochs, callbacks=callbacks,\
                     validation_data=(X_test, y_test))
 
           
@@ -192,7 +186,7 @@ plt.plot( np.argmin(results.history["val_loss"]), np.min(results.history["val_lo
 plt.xlabel("Epochs")
 plt.ylabel("log_loss")
 plt.legend();
-plt.savefig('./Results/plots/'+str(args.Model)+'/train_loss.png')
+plt.savefig('./Results/plots/'+str(config['Model'])+'/train_loss.png')
 
 plt.figure(figsize=(8, 8))
 plt.title("Learning curve")
@@ -202,7 +196,7 @@ plt.plot( np.argmax(results.history["val_dice_coef"]), np.max(results.history["v
 plt.xlabel("Epochs")
 plt.ylabel("Dice Coeff")
 plt.legend();
-plt.savefig('./Results/plots/'+str(args.Model)+'/train_dice.png')
+plt.savefig('./Results/plots/'+str(config['Model'])+'/train_dice.png')
 
 plt.figure(figsize=(8, 8))
 plt.title("Learning curve")
@@ -212,7 +206,7 @@ plt.plot( np.argmax(results.history["val_f1"]), np.max(results.history["val_f1"]
 plt.xlabel("Epochs")
 plt.ylabel("f1")
 plt.legend();
-plt.savefig('./Results/plots/'+str(args.Model)+'/train_f1.png')
+plt.savefig('./Results/plots/'+str(config['Model'])+'/train_f1.png')
 
 plt.figure(figsize=(8, 8))
 plt.title("Learning curve")
@@ -222,7 +216,7 @@ plt.plot( np.argmax(results.history["val_accuracy"]), np.max(results.history["va
 plt.xlabel("Epochs")
 plt.ylabel("accuracy")
 plt.legend();
-plt.savefig('./Results/plots/'+str(args.Model)+'/train_accuracy.png')
+plt.savefig('./Results/plots/'+str(config['Model'])+'/train_accuracy.png')
 
 """
 plt.figure(figsize=(8, 8))
