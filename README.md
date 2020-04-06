@@ -3,15 +3,13 @@
 <p align="center">Note: This project is a work-in-progress, and not quite ready for real usage.<br>If you're interested in using it, feel free to ⭐️ the repo so we know!</p>
 
 ### Current Features
-
-- [ ] Model Visualization
 - [x] Config File
 - [x] Training Graphs
 - [x] Patch-Wise Input
 - [x] Updation of README Files
 - [x] Inference Files
 - [x] Quantitative Results
-- [ ] Visualization of Results
+- [x] Visualization of Results
 - [x] Train File
 - [x] Directory Structure
 - [x] Weights Save With Model
