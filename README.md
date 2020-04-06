@@ -34,6 +34,18 @@ A training sample with segmentation mask from training set can be seen below:
 :-------------------------:|:-------------------------:
 ![](./Datasets/Samples/TCGA-RD-A8N9-01A-01-TS1.png)  |  ![](./Datasets/Samples/TCGA-RD-A8N9-01A-01-TS1_bin_mask.png)
 
+## Models Diagrams
+
+### SegNet
+![SegNet Architecture](https://www.researchgate.net/profile/Vijay_Badrinarayanan/publication/283471087/figure/fig1/AS:391733042008065@1470407843299/An-illustration-of-the-SegNet-architecture-There-are-no-fully-connected-layers-and-hence.png)
+
+### U-Net
+![UNet Architecture](https://vasanashwin.github.io/retrospect/images/unet.png)
+
+### Deep Lab v3+
+![DeepLabV3 Architecture](https://miro.medium.com/max/1590/1*R7tiLxyeHYHMXTGJIanZiA.png)
+
+
 ## Trained Weights
 The trained weights can be downloaded from [google drive](https://drive.google.com/file/d/1uTFPece1j-9dUhNvFB3w_FNODzhmx5ql/view).
 
