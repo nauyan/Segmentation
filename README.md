@@ -37,6 +37,24 @@ A training sample with segmentation mask from training set can be seen below:
 ## Trained Weights
 The trained weights can be downloaded from [google drive](https://drive.google.com/file/d/1uTFPece1j-9dUhNvFB3w_FNODzhmx5ql/view).
 
+## Installation
+To get this repo work please install all the dependencies using the command below:
+```
+pip install -r requirments.txt
+```
+
+## Training
+To start training run the Train.py script from the command below. For training configurations refer to the [config.json](./config.json) file. You can update the file according to your training settings. Model avaible for training are U-NET,SegNet, DeepLabv3+.
+```
+ python Train.py
+```
+
+## Testing
+To test the trained models on Test Images you first have to download the weights and place them in the [results](./Results/). After downliading the weights you unzip them and then run the Inference by using the command below. For testing configurations please refer to the [config.json](./config.json) file.
+```
+python Test.py
+```
+
 ## Visualization of Results
  |      Tissue             | Mask  |  Predicted Mask  |
 :-------------------------:|:-------------------------:|:-------------------------:
