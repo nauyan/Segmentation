@@ -42,7 +42,7 @@ The trained weights can be downloaded from [google drive](https://drive.google.c
 ## Visualization of Results
  |      Tissue             | Mask  |  Predicted Mask  |
 :-------------------------:|:-------------------------:|:-------------------------:
-![](./Datasets/Samples/Test/TCGA-HT-8564-01Z-00-DX1.tif)  |  ![](./Datasets/Samples/Test/TCGA-HT-8564-01Z-00-DX1_bin_mask.png) |  ![](./Results/outputs/TCGA-HT-8564-01Z-00-DX1.jpg)
+![](./Datasets/Samples/Test/TCGA-HT-8564-01Z-00-DX1_bin_mask.png)  |  ![](./Datasets/Samples/Test/TCGA-HT-8564-01Z-00-DX1_bin_mask.png) |  ![](./Results/outputs/TCGA-HT-8564-01Z-00-DX1.jpg)
 
 ## Quantitatvie Results
 
