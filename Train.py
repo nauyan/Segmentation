@@ -10,6 +10,8 @@ from keras.layers import Input
 # from Code.utils.lossfunctions import jaccard_distance_loss,dice_coef_loss
 from Code.utils.metricfunctions import dice_coef,f1
 
+#from Code.network.unetmod.u_net_mod import get_unet_mod
+from Code.network.unetmod.u_net_mod import *
 from Code.network.unet.u_net import get_unet
 from Code.network.segnet.segnet import get_segnet
 from Code.network.deeplab.deeplab import Deeplabv3
@@ -34,7 +36,7 @@ args = parser.parse_args()
 """
 with open('./config.json') as config_file:
     config = json.load(config_file)
-print (config)
+# print (config)
 im_width = config['im_width']
 im_height = config['im_height']
 patch_width = config['patch_width']
@@ -120,8 +122,17 @@ y_train = np.array(y_train)
 X_test = np.array(X_test) 
 y_test = np.array(y_test) 
 
-input_img = Input((None, None, 3), name='img')
+input_img = Input((256, 256, 3), name='img')
 #from tensorflow.keras.utils.vis_utils import plot_model
+
+if config['Model'] == "UNETMOD":
+    print("Loading UNETMOD Model")
+    model = get_unet_mod(input_img, n_filters=32, dropout=0.05, batchnorm=True)  
+    # model.compile(optimizer=Adam(1e-5), loss=jaccard_distance_loss, metrics=[iou,dice_coef])
+    model.compile(optimizer=Adam(), loss="binary_crossentropy", metrics=["accuracy", dice_coef, f1])
+    print("Printing Model Summary")
+    print (model.summary())
+    tf.keras.utils.plot_model(model, './Code/network/unetmod/unet_plot.png')
 
 if config['Model'] == "UNET":
     print("Loading UNET Model")
