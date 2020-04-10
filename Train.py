@@ -9,6 +9,7 @@ from keras.optimizers import Adam, nadam,SGD
 from keras.layers import Input
 # from Code.utils.lossfunctions import jaccard_distance_loss,dice_coef_loss
 from Code.utils.metricfunctions import dice_coef,f1
+from Code.utils.lossfunctions import *
 
 #from Code.network.unetmod.u_net_mod import get_unet_mod
 from Code.network.unetmod.u_net_mod import *
@@ -122,14 +123,14 @@ y_train = np.array(y_train)
 X_test = np.array(X_test) 
 y_test = np.array(y_test) 
 
-input_img = Input((256, 256, 3), name='img')
+input_img = Input((None, None, 3), name='img')
 #from tensorflow.keras.utils.vis_utils import plot_model
 
 if config['Model'] == "UNETMOD":
     print("Loading UNETMOD Model")
-    model = get_unet_mod(input_img, n_filters=16, dropout=0.05, batchnorm=True)  #32
+    model = get_unet_mod(input_img, n_filters=16, dropout=0.1, batchnorm=True)  #32
     # model.compile(optimizer=Adam(1e-5), loss=jaccard_distance_loss, metrics=[iou,dice_coef])
-    model.compile(optimizer=Adam(amsgrad=True), loss="binary_crossentropy", metrics=["accuracy", dice_coef, f1])
+    model.compile(optimizer=Adam(amsgrad=True), loss=dice_loss, metrics=["accuracy", dice_coef, f1])
     print("Printing Model Summary")
     print (model.summary())
     tf.keras.utils.plot_model(model, './Code/network/unetmod/unet_plot.png')
@@ -174,7 +175,7 @@ print("Compiling Model")
 callbacks = [
     EarlyStopping(patience=10, verbose=1),
     ReduceLROnPlateau(factor=0.1, patience=10, min_lr=0.00001, verbose=1),
-    ModelCheckpoint('./Results/weights/'+str(config['Model'])+'/'+str(config['Model'])+'-Best.h5', verbose=1, save_best_only=True, save_weights_only=False)
+    ModelCheckpoint('./Results/weights/'+str(config['Model'])+'/'+str(config['Model'])+'-Best.h5', monitor='val_dice_coef',mode = 'max' , verbose=1, save_best_only=True, save_weights_only=False)
 ]
 X_train = X_train.reshape(-1,patch_height,patch_width,3)
 y_train = y_train.reshape(-1,patch_height,patch_width,1)

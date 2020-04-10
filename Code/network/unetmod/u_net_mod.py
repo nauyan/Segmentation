@@ -14,10 +14,27 @@ from keras.engine import InputSpec
 from keras.layers import merge
 from keras import layers
 
+def squeeze_excite_block(tensor, ratio=16):
+    init = tensor
+    channel_axis = 1 if K.image_data_format() == "channels_first" else -1
+    filters = init._keras_shape[channel_axis]
+    se_shape = (1, 1, filters)
+
+    se = GlobalAveragePooling2D()(init)
+    se = Reshape(se_shape)(se)
+    se = Dense(filters // ratio, activation='relu', kernel_initializer='he_normal', use_bias=False)(se)
+    se = Dense(filters, activation='sigmoid', kernel_initializer='he_normal', use_bias=False)(se)
+
+    if K.image_data_format() == 'channels_first':
+        se = Permute((3, 1, 2))(se)
+
+    x = multiply([init, se])
+    return x
 
 def conv2d_block(input_tensor, n_filters, kernel_size = 3, batchnorm = True):
     """Function to add 2 convolutional layers with the parameters passed to it"""
     # first layer
+    se = squeeze_excite_block(input_tensor)
     x = Conv2D(filters = n_filters, kernel_size = (kernel_size, kernel_size),\
               kernel_initializer = 'he_normal', padding = 'same')(input_tensor)
     if batchnorm:
@@ -30,31 +47,40 @@ def conv2d_block(input_tensor, n_filters, kernel_size = 3, batchnorm = True):
     if batchnorm:
         x = BatchNormalization()(x)
     x = Activation('relu')(x)
+    c1 = layers.add([x, se])
     
     return x
 
 def get_unet_mod(input_img, n_filters = 16, dropout = 0.1, batchnorm = True):
     """Function to define the UNET Model"""
     # Contracting Path
-    c1 = conv2d_block(input_img, n_filters * 1, kernel_size = 3, batchnorm = batchnorm)
-    c1 = concatenate([c1, input_img])
+    skip = Conv2D(filters = n_filters * 1, kernel_size = (3, 3),\
+              kernel_initializer = 'he_normal', padding = 'same')(input_img)
+    c1 = conv2d_block(skip, n_filters * 1, kernel_size = 3, batchnorm = batchnorm)
+    c1 = layers.add([c1, skip])
     p1 = MaxPooling2D((2, 2))(c1)
     p1 = Dropout(dropout)(p1)
     
-    p1 = aspp_block(p1,num_filters=256,rate_scale=1,output_stride=2,input_shape=(256,256,3))
+    #p1 = aspp_block(p1,num_filters=256,rate_scale=1,output_stride=2,input_shape=(256,256,3))
     
-    c2 = conv2d_block(p1, n_filters * 2, kernel_size = 3, batchnorm = batchnorm)
-    c2 = concatenate([c2, p1])
+    skip = Conv2D(filters = n_filters * 2, kernel_size = (3, 3),\
+              kernel_initializer = 'he_normal', padding = 'same')(p1)
+    c2 = conv2d_block(skip, n_filters * 2, kernel_size = 3, batchnorm = batchnorm)
+    c2 = layers.add([c2, skip])
     p2 = MaxPooling2D((2, 2))(c2)
     p2 = Dropout(dropout)(p2)
     
-    c3 = conv2d_block(p2, n_filters * 4, kernel_size = 3, batchnorm = batchnorm)
-    c3 = concatenate([c3, p2])
+    skip = Conv2D(filters = n_filters * 4, kernel_size = (3, 3),\
+              kernel_initializer = 'he_normal', padding = 'same')(p2)
+    c3 = conv2d_block(skip, n_filters * 4, kernel_size = 3, batchnorm = batchnorm)
+    c3 = layers.add([c3, skip])
     p3 = MaxPooling2D((2, 2))(c3)
     p3 = Dropout(dropout)(p3)
     
-    c4 = conv2d_block(p3, n_filters * 8, kernel_size = 3, batchnorm = batchnorm)
-    c4 = concatenate([c4, p3])
+    skip = Conv2D(filters = n_filters * 8, kernel_size = (3, 3),\
+              kernel_initializer = 'he_normal', padding = 'same')(p3)
+    c4 = conv2d_block(skip, n_filters * 8, kernel_size = 3, batchnorm = batchnorm)
+    c4 = layers.add([c4, skip])
     p4 = MaxPooling2D((2, 2))(c4)
     p4 = Dropout(dropout)(p4)
     
@@ -62,25 +88,41 @@ def get_unet_mod(input_img, n_filters = 16, dropout = 0.1, batchnorm = True):
     
     """"""
     # Expansive Path
+    
     u6 = Conv2DTranspose(n_filters * 8, (3, 3), strides = (2, 2), padding = 'same')(c5)
     u6 = concatenate([u6, c4])
     u6 = Dropout(dropout)(u6)
-    c6 = conv2d_block(u6, n_filters * 8, kernel_size = 3, batchnorm = batchnorm)
+    skip = Conv2D(filters = n_filters * 8, kernel_size = (3, 3),\
+              kernel_initializer = 'he_normal', padding = 'same')(u6)
+    c6 = conv2d_block(skip, n_filters * 8, kernel_size = 3, batchnorm = batchnorm)
+    c6 = layers.add([c6, skip])
+    
     
     u7 = Conv2DTranspose(n_filters * 4, (3, 3), strides = (2, 2), padding = 'same')(c6)
     u7 = concatenate([u7, c3])
     u7 = Dropout(dropout)(u7)
-    c7 = conv2d_block(u7, n_filters * 4, kernel_size = 3, batchnorm = batchnorm)
+    skip = Conv2D(filters = n_filters * 4, kernel_size = (3, 3),\
+              kernel_initializer = 'he_normal', padding = 'same')(u7)
+    c7 = conv2d_block(skip, n_filters * 4, kernel_size = 3, batchnorm = batchnorm)
+    c6 = layers.add([c7, skip])
+    
     
     u8 = Conv2DTranspose(n_filters * 2, (3, 3), strides = (2, 2), padding = 'same')(c7)
     u8 = concatenate([u8, c2])
     u8 = Dropout(dropout)(u8)
-    c8 = conv2d_block(u8, n_filters * 2, kernel_size = 3, batchnorm = batchnorm)
+    skip = Conv2D(filters = n_filters * 2, kernel_size = (3, 3),\
+              kernel_initializer = 'he_normal', padding = 'same')(u8)
+    c8 = conv2d_block(skip, n_filters * 2, kernel_size = 3, batchnorm = batchnorm)
+    c6 = layers.add([c8, skip])
+    
     
     u9 = Conv2DTranspose(n_filters * 1, (3, 3), strides = (2, 2), padding = 'same')(c8)
     u9 = concatenate([u9, c1])
     u9 = Dropout(dropout)(u9)
-    c9 = conv2d_block(u9, n_filters * 1, kernel_size = 3, batchnorm = batchnorm)
+    skip = Conv2D(filters = n_filters * 1, kernel_size = (3, 3),\
+              kernel_initializer = 'he_normal', padding = 'same')(u9)
+    c9 = conv2d_block(skip, n_filters * 1, kernel_size = 3, batchnorm = batchnorm)
+    c6 = layers.add([c9, skip])
     
     #outputs = Conv2D(1, (1, 1), activation='sigmoid')(c5)
     #c9 = aspp_block(c5,num_filters=256,rate_scale=1,output_stride=16,input_shape=(256,256,3))
