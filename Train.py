@@ -127,9 +127,9 @@ input_img = Input((256, 256, 3), name='img')
 
 if config['Model'] == "UNETMOD":
     print("Loading UNETMOD Model")
-    model = get_unet_mod(input_img, n_filters=32, dropout=0.05, batchnorm=True)  
+    model = get_unet_mod(input_img, n_filters=16, dropout=0.05, batchnorm=True)  #32
     # model.compile(optimizer=Adam(1e-5), loss=jaccard_distance_loss, metrics=[iou,dice_coef])
-    model.compile(optimizer=Adam(), loss="binary_crossentropy", metrics=["accuracy", dice_coef, f1])
+    model.compile(optimizer=Adam(amsgrad=True), loss="binary_crossentropy", metrics=["accuracy", dice_coef, f1])
     print("Printing Model Summary")
     print (model.summary())
     tf.keras.utils.plot_model(model, './Code/network/unetmod/unet_plot.png')
@@ -173,7 +173,7 @@ print("Compiling Model")
 #SGD(lr=1e-5, momentum=0.95)
 callbacks = [
     EarlyStopping(patience=10, verbose=1),
-    ReduceLROnPlateau(factor=0.1, patience=5, min_lr=0.00001, verbose=1),
+    ReduceLROnPlateau(factor=0.1, patience=10, min_lr=0.00001, verbose=1),
     ModelCheckpoint('./Results/weights/'+str(config['Model'])+'/'+str(config['Model'])+'-Best.h5', verbose=1, save_best_only=True, save_weights_only=False)
 ]
 X_train = X_train.reshape(-1,patch_height,patch_width,3)

@@ -12,6 +12,7 @@ from keras.layers.merge import concatenate, add
 from keras.engine.topology import Layer
 from keras.engine import InputSpec
 from keras.layers import merge
+from keras import layers
 
 
 def conv2d_block(input_tensor, n_filters, kernel_size = 3, batchnorm = True):
@@ -36,23 +37,30 @@ def get_unet_mod(input_img, n_filters = 16, dropout = 0.1, batchnorm = True):
     """Function to define the UNET Model"""
     # Contracting Path
     c1 = conv2d_block(input_img, n_filters * 1, kernel_size = 3, batchnorm = batchnorm)
+    c1 = concatenate([c1, input_img])
     p1 = MaxPooling2D((2, 2))(c1)
     p1 = Dropout(dropout)(p1)
     
+    p1 = aspp_block(p1,num_filters=256,rate_scale=1,output_stride=2,input_shape=(256,256,3))
+    
     c2 = conv2d_block(p1, n_filters * 2, kernel_size = 3, batchnorm = batchnorm)
+    c2 = concatenate([c2, p1])
     p2 = MaxPooling2D((2, 2))(c2)
     p2 = Dropout(dropout)(p2)
     
     c3 = conv2d_block(p2, n_filters * 4, kernel_size = 3, batchnorm = batchnorm)
+    c3 = concatenate([c3, p2])
     p3 = MaxPooling2D((2, 2))(c3)
     p3 = Dropout(dropout)(p3)
     
     c4 = conv2d_block(p3, n_filters * 8, kernel_size = 3, batchnorm = batchnorm)
+    c4 = concatenate([c4, p3])
     p4 = MaxPooling2D((2, 2))(c4)
     p4 = Dropout(dropout)(p4)
     
     c5 = conv2d_block(p4, n_filters = n_filters * 16, kernel_size = 3, batchnorm = batchnorm)
-    """
+    
+    """"""
     # Expansive Path
     u6 = Conv2DTranspose(n_filters * 8, (3, 3), strides = (2, 2), padding = 'same')(c5)
     u6 = concatenate([u6, c4])
@@ -73,8 +81,9 @@ def get_unet_mod(input_img, n_filters = 16, dropout = 0.1, batchnorm = True):
     u9 = concatenate([u9, c1])
     u9 = Dropout(dropout)(u9)
     c9 = conv2d_block(u9, n_filters * 1, kernel_size = 3, batchnorm = batchnorm)
-    """
-    c9 = aspp_block(c5,num_filters=256,rate_scale=1,output_stride=16,input_shape=(256,256,3))
+    
+    #outputs = Conv2D(1, (1, 1), activation='sigmoid')(c5)
+    #c9 = aspp_block(c5,num_filters=256,rate_scale=1,output_stride=16,input_shape=(256,256,3))
     outputs = Conv2D(1, (1, 1), activation='sigmoid')(c9)
     model = Model(inputs=[input_img], outputs=[outputs])
     return model
@@ -124,7 +133,7 @@ def aspp_block(x,num_filters=256,rate_scale=1,output_stride=16,input_shape=(256,
     """
     
     # y = _conv_bn_relu(filters=1, kernel_size=(1, 1),padding='same')(y)
-    y = _conv(filters=256, kernel_size=(1, 1),padding='same', name='ASPPLAST')(y)
+    y = _conv(filters=256, kernel_size=(1, 1),padding='same')(y)
     y = BatchNormalization()(y)
     return y
     
@@ -135,6 +144,7 @@ def _conv(**conv_params):
     kernel_size = conv_params["kernel_size"]
     strides = conv_params.setdefault("strides", (1, 1))
     dilation_rate = conv_params.setdefault('dilation_rate',(1,1))
+    # dilation_rate = conv_params["dilation_rate"]
     kernel_initializer = conv_params.setdefault("kernel_initializer", "he_normal")
     padding = conv_params.setdefault("padding", "same")
 

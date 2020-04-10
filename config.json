@@ -6,7 +6,7 @@
   "TEST_PATH_IMAGES" : "./Datasets/MonuSeg/Test/TissueImages/*",
   "TEST_PATH_GT" : "./Datasets/MonuSeg/Test/GroundTruth/",
   "Epochs" : 30,
-  "Batch" : 16,
+  "Batch" : 8,
   "Model" : "UNETMOD",
   "patch_width" : 256 ,
   "patch_height" : 256,
