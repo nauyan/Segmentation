@@ -82,12 +82,21 @@ python Test.py
 | Unet | 0.183 | 0.928 | 0.795 | 0.740 
 | Segnet | 0.686 | 0.833 | 0.653 | 0.348
 | DeeplabV3+ | 0.264 | 0.913 | 0.899 | 0.777
+| Unet + Skip Connections + ASPP | 0.264 | 0.913 | 0.899 | 0.777
 
 ## Results
 Three Segmentation models have been trained and the model is evaluated on three metrics namely:
 * Accuracy
 * F1-Score
 * Dice Score
+### U-Net + Skip Connections + ASPP
+<p float="center">
+	<img src='./Results/plots/UNETMOD/train_accuracy.png' width="430"/>
+  	<img src='./Results/plots/UNETMOD/train_f1.png' width="430"/>
+ <img src='./Results/plots/UNETMOD/train_dice.png' width="430"/>
+  	<img src='./Results/plots/UNETMOD/train_loss.png' width="430"/>
+</p>
+
 ### U-Net
 <p float="center">
 	<img src='./Results/plots/UNET/train_accuracy.png' width="430"/>
