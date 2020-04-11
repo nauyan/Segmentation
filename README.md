@@ -60,7 +60,7 @@ Blocks used to modify U-Net are:
 
 
 ## Pre-Trained Models
-The Pre-Trained models can be downloaded from [google drive](https://drive.google.com/file/d/1uTFPece1j-9dUhNvFB3w_FNODzhmx5ql/view).
+The Pre-Trained models can be downloaded from [google drive](https://drive.google.com/drive/folders/1g5SdbW8q1Z0e9dk6cW431JO01BDq4g0H).
 
 ## Installation
 To get this repo work please install all the dependencies using the command below:
