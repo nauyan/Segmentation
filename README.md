@@ -90,7 +90,7 @@ python Test.py
 | Model | Loss | Accuracy | F1 Score | Dice Score |
 | ----- | ---- | ---- | ---- | ---- |
 | Unet | 0.0835 | 0.9150 | 0.7910 | 0.7906 
-| Segnet | 0.686 | 0.833 | 0.653 | 0.348
+| Segnet | 0.4820 | 0.8077 | 0.5798 | 0.3684
 | DeeplabV3+ | 0.0783 | 0.9120 | 0.7750 | 0.7743
 | Unet + Skip Connections + ASPP + SE Block | 0.0770 |  0.9210 | 0.801 | 0.8005
 
