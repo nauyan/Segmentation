@@ -42,10 +42,10 @@ Since the size of data set is small and was eaisly loaded into the memmory so we
 ### U-Net Modified
 Blocks used to modify U-Net are:
 #### Atrous Spatial Pyramid Pooling(ASPP)
-<img src="http://www.programmersought.com/images/604/dd339c6f39e94cc280eee7389f7f266c.png" width="800">
+<img src="http://www.programmersought.com/images/604/dd339c6f39e94cc280eee7389f7f266c.png" width="1024">
 
 #### Squeeze-and-Excitation Network
-<img src="https://cdn-images-1.medium.com/fit/t/1600/480/1*bmObF5Tibc58iE9iOu327w.png" width="800">
+<img src="https://cdn-images-1.medium.com/fit/t/1600/480/1*bmObF5Tibc58iE9iOu327w.png" width="1024">
 
 
 ### SegNet
