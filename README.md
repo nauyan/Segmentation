@@ -39,6 +39,11 @@ Since the size of data set is small and was eaisly loaded into the memmory so we
 
 ## Models Diagrams
 
+### U-Net
+![Atrous Spatial Pyramid Pooling(ASPP)](https://www.researchgate.net/profile/Lin_Chen228/publication/331556645/figure/fig1/AS:733487137054723@1551888369843/Illustration-of-Atrous-Spatial-Pyramid-Pooling-ASPP-Max-pooling-a-11-convolution-and.ppm)
+![Squeeze-and-Excitation Network](https://cdn-images-1.medium.com/fit/t/1600/480/1*bmObF5Tibc58iE9iOu327w.png)
+
+
 ### SegNet
 ![SegNet Architecture](https://www.researchgate.net/profile/Vijay_Badrinarayanan/publication/283471087/figure/fig1/AS:391733042008065@1470407843299/An-illustration-of-the-SegNet-architecture-There-are-no-fully-connected-layers-and-hence.png)
 
@@ -81,7 +86,7 @@ python Test.py
 | ----- | ---- | ---- | ---- | ---- |
 | Unet | 0.0835 | 0.915 | 0.7910 | 0.7906 
 | Segnet | 0.686 | 0.833 | 0.653 | 0.348
-| DeeplabV3+ | 0.264 | 0.913 | 0.899 | 0.777
+| DeeplabV3+ | 0.0783 | 0.9120 | 0.7750 | 0.7743
 | Unet + Skip Connections + ASPP + SE Block | 0.077 |  0.921 | 0.801 | 0.8005
 
 ## Results
