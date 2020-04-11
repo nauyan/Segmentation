@@ -4,7 +4,7 @@ import random
 import tensorflow as tf
 from keras import backend as K
 from keras.models import Model, load_model
-from keras.layers import Input, BatchNormalization, Activation, Dense, Dropout, ZeroPadding2D, AveragePooling2D
+from keras.layers import Input, BatchNormalization, Activation, Dense, Dropout, ZeroPadding2D, AveragePooling2D, GlobalAveragePooling2D, multiply
 from keras.layers.core import Lambda, RepeatVector, Reshape
 from keras.layers.convolutional import Conv2D, Conv2DTranspose
 from keras.layers.pooling import MaxPooling2D, GlobalMaxPool2D
@@ -61,8 +61,6 @@ def get_unet_mod(input_img, n_filters = 16, dropout = 0.1, batchnorm = True):
     p1 = MaxPooling2D((2, 2))(c1)
     p1 = Dropout(dropout)(p1)
     
-    #p1 = aspp_block(p1,num_filters=256,rate_scale=1,output_stride=2,input_shape=(256,256,3))
-    
     skip = Conv2D(filters = n_filters * 2, kernel_size = (3, 3),\
               kernel_initializer = 'he_normal', padding = 'same')(p1)
     c2 = conv2d_block(skip, n_filters * 2, kernel_size = 3, batchnorm = batchnorm)
@@ -84,9 +82,12 @@ def get_unet_mod(input_img, n_filters = 16, dropout = 0.1, batchnorm = True):
     p4 = MaxPooling2D((2, 2))(c4)
     p4 = Dropout(dropout)(p4)
     
-    c5 = conv2d_block(p4, n_filters = n_filters * 16, kernel_size = 3, batchnorm = batchnorm)
+    skip = Conv2D(filters = n_filters * 16, kernel_size = (3, 3),\
+              kernel_initializer = 'he_normal', padding = 'same')(p4)
+    c5 = conv2d_block(skip, n_filters = n_filters * 16, kernel_size = 3, batchnorm = batchnorm)
     
-    """"""
+    c5 = aspp_block(c5,num_filters=256,rate_scale=1,output_stride=16,input_shape=(256,256,3))
+    
     # Expansive Path
     
     u6 = Conv2DTranspose(n_filters * 8, (3, 3), strides = (2, 2), padding = 'same')(c5)

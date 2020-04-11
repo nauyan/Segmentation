@@ -123,23 +123,23 @@ y_train = np.array(y_train)
 X_test = np.array(X_test) 
 y_test = np.array(y_test) 
 
-input_img = Input((None, None, 3), name='img')
+input_img = Input((256, 256, 3), name='img')
 #from tensorflow.keras.utils.vis_utils import plot_model
 
 if config['Model'] == "UNETMOD":
     print("Loading UNETMOD Model")
     model = get_unet_mod(input_img, n_filters=16, dropout=0.1, batchnorm=True)  #32
     # model.compile(optimizer=Adam(1e-5), loss=jaccard_distance_loss, metrics=[iou,dice_coef])
-    model.compile(optimizer=Adam(amsgrad=True), loss=dice_loss, metrics=["accuracy", dice_coef, f1])
+    model.compile(optimizer=Adam(amsgrad=True), loss=jaccard_distance_loss, metrics=["accuracy", dice_coef, f1])
     print("Printing Model Summary")
     print (model.summary())
     tf.keras.utils.plot_model(model, './Code/network/unetmod/unet_plot.png')
 
 if config['Model'] == "UNET":
     print("Loading UNET Model")
-    model = get_unet(input_img, n_filters=32, dropout=0.05, batchnorm=True)  
+    model = get_unet(input_img, n_filters=16, dropout=0.1, batchnorm=True)  
     # model.compile(optimizer=Adam(1e-5), loss=jaccard_distance_loss, metrics=[iou,dice_coef])
-    model.compile(optimizer=Adam(), loss="binary_crossentropy", metrics=["accuracy", dice_coef, f1])
+    model.compile(optimizer=Adam(amsgrad=True), loss=jaccard_distance_loss, metrics=["accuracy", dice_coef, f1])
     print("Printing Model Summary")
     print (model.summary())
     tf.keras.utils.plot_model(model, './Code/network/unet/unet_plot.png')
@@ -151,7 +151,7 @@ if config['Model'] == "SEGNET":
         #kernel=3,
         #pool_size=(2, 2),
         #output_mode="softmax")
-    model.compile(optimizer=Adam(), loss="binary_crossentropy", metrics=["accuracy", dice_coef, f1])
+    model.compile(optimizer=Adam(amsgrad=True), loss=jaccard_distance_loss, metrics=["accuracy", dice_coef, f1])
     print("Printing Model Summary")
     print (model.summary())
     tf.keras.utils.plot_model(model, './Code/network/segnet/segnet_plot.png')
@@ -160,7 +160,7 @@ if config['Model'] == "DEEPLAB":
     print("Loading DEEPLAB Model")
     model = Deeplabv3(weights=None, input_tensor=None, input_shape=(patch_height, patch_width, 3), classes=1, backbone='xception',
                OS=16, alpha=1., activation='sigmoid')
-    model.compile(optimizer=tf.keras.optimizers.Adam(), loss="binary_crossentropy", metrics=["accuracy", dice_coef, f1])
+    model.compile(optimizer=tf.keras.optimizers.Adam(amsgrad=True), loss=jaccard_distance_loss, metrics=["accuracy", dice_coef, f1])
     #plot_model(model, to_file='./Code/network/deeplab/deeplab_plot.png', show_shapes=True, show_layer_names=True)
  
 print("Compiling Model")
@@ -189,6 +189,7 @@ print(X_test.shape, y_test.shape)
 results = model.fit(X_train, y_train, batch_size=config['Batch'], verbose=1, epochs=Epochs, callbacks=callbacks,\
                     validation_data=(X_test, y_test))
 
+print(model.evaluate(X_test, y_test, verbose=1))
           
 plt.figure(figsize=(8, 8))
 plt.title("Learning curve")
