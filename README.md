@@ -42,14 +42,15 @@ Since the size of data set is small and was eaisly loaded into the memmory so we
 ### U-Net Modified
 Blocks used to modify U-Net are:
 #### Atrous Spatial Pyramid Pooling(ASPP)
-![Atrous Spatial Pyramid Pooling(ASPP)](http://www.programmersought.com/images/604/dd339c6f39e94cc280eee7389f7f266c.png | width=48)
+![Atrous Spatial Pyramid Pooling(ASPP)](http://www.programmersought.com/images/604/dd339c6f39e94cc280eee7389f7f266c.png)
 
 #### Squeeze-and-Excitation Network
-![Squeeze-and-Excitation Network](https://cdn-images-1.medium.com/fit/t/1600/480/1*bmObF5Tibc58iE9iOu327w.png| width=48)
+<img src="https://cdn-images-1.medium.com/fit/t/1600/480/1*bmObF5Tibc58iE9iOu327w.png" width="48">
 
 
 ### SegNet
-![SegNet Architecture](https://www.researchgate.net/profile/Vijay_Badrinarayanan/publication/283471087/figure/fig1/AS:391733042008065@1470407843299/An-illustration-of-the-SegNet-architecture-There-are-no-fully-connected-layers-and-hence.png)
+<img src="https://www.researchgate.net/profile/Vijay_Badrinarayanan/publication/283471087/figure/fig1/AS:391733042008065@1470407843299/An-illustration-of-the-SegNet-architecture-There-are-no-fully-connected-layers-and-hence.png" width="48">
+
 
 ### U-Net
 ![UNet Architecture](https://vasanashwin.github.io/retrospect/images/unet.png)
