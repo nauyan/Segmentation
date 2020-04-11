@@ -82,7 +82,7 @@ python Test.py
 | Unet | 0.183 | 0.928 | 0.795 | 0.740 
 | Segnet | 0.686 | 0.833 | 0.653 | 0.348
 | DeeplabV3+ | 0.264 | 0.913 | 0.899 | 0.777
-| Unet + Skip Connections + ASPP | 0.264 | 0.913 | 0.899 | 0.777
+| Unet + Skip Connections + ASPP | 0.077 |  0.921 | 0.801 | 0.8005
 
 ## Results
 Three Segmentation models have been trained and the model is evaluated on three metrics namely:
