@@ -49,7 +49,6 @@ Blocks used to modify U-Net are:
 
 
 ### SegNet
-<img src="" width="48">
 ![SegNet Architecture](https://www.researchgate.net/profile/Vijay_Badrinarayanan/publication/283471087/figure/fig1/AS:391733042008065@1470407843299/An-illustration-of-the-SegNet-architecture-There-are-no-fully-connected-layers-and-hence.png)
 
 
