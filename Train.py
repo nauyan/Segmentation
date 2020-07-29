@@ -22,19 +22,9 @@ import tensorflow as tf
 from skimage.util.shape import view_as_windows
 import json
 
-"""
-parser = argparse.ArgumentParser(description='Simple training script for training a U-Net network.')
-parser.add_argument('--TRAIN_PATH_IMAGES',   help='Path to Training Images', type=str, default='./Datasets/MonuSeg/Training/TissueImages/*')
-parser.add_argument('--TRAIN_PATH_GT',   help='Path to Training Ground Truth Images', type=str, default='./Datasets/MonuSeg/Training/GroundTruth/')
-parser.add_argument('--TEST_PATH_IMAGES',   help='Path to Test Images', type=str, default='./Datasets/MonuSeg/Test/TissueImages/*')
-parser.add_argument('--TEST_PATH_GT',   help='Path to Test Ground Truth Images', type=str, default='./Datasets/MonuSeg/Test/GroundTruth/')
-parser.add_argument('--im_width',   help='Width of Image', type=int, default=1024)
-parser.add_argument('--im_height',   help='Height of Image', type=int, default=1024)
-parser.add_argument('--Epochs',   help='Epochs to Train', type=int, default=1)
-parser.add_argument('--Batch',   help='Batch Size', type=int, default=1)
-parser.add_argument('--Model',   help='Model to Train (UNET,SEGNET,DEEPLAB)', type=str, default="UNET")
-args = parser.parse_args()
-"""
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
+
 with open('./config.json') as config_file:
     config = json.load(config_file)
 # print (config)

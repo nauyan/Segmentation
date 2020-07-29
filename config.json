@@ -10,6 +10,6 @@
   "Model" : "UNETMOD",
   "patch_width" : 256 ,
   "patch_height" : 256,
-  "sample_test_image" : "./Datasets/Samples/Test/TCGA-HT-8564-01Z-00-DX1.tif",
+  "sample_test_image" : "./Datasets/Samples/Test/TCGA-HT-8564-01Z-00-DX1.png",
   "sample_test_mask" : "./Datasets/Samples/Test/TCGA-HT-8564-01Z-00-DX1_bin_mask.png"
 }

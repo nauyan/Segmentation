@@ -8,6 +8,9 @@ import tensorflow as tf
 with open('./config.json') as config_file:
     config = json.load(config_file)
 
+if config['Model'] == "UNETMOD":
+    model = keras.models.load_model("./Results/weights/" + config['Model'] + "/" +config['Model']+"-Best.h5", compile=False)
+
 if config['Model']=="UNET":
     model = keras.models.load_model("./Results/weights/" + config['Model'] + "/" +config['Model']+"-Best.h5", compile=False)
 if config['Model']=="SEGNET":
