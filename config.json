@@ -7,7 +7,7 @@
   "TEST_PATH_GT" : "./Datasets/MonuSeg/Test/GroundTruth/",
   "Epochs" : 30,
   "Batch" : 8,
-  "Model" : "UNETMOD",
+  "Model" : "UNET",
   "patch_width" : 256 ,
   "patch_height" : 256,
   "sample_test_image" : "./Datasets/Samples/Test/TCGA-HT-8564-01Z-00-DX1.png",

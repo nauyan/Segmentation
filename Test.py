@@ -5,6 +5,8 @@ import os
 from Code.network.segnet.custom_layers import MaxPoolingWithIndices,UpSamplingWithIndices,CompositeConv
 import tensorflow as tf
 
+#os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
 with open('./config.json') as config_file:
     config = json.load(config_file)
 
