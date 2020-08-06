@@ -1,6 +1,6 @@
 {
-  "im_width" : 1024,
-  "im_height" : 1024,
+  "im_width" : 1000,
+  "im_height" : 1000,
   "TRAIN_PATH_IMAGES" : "./Datasets/MonuSeg/Training/TissueImages/*",
   "TRAIN_PATH_GT" : "./Datasets/MonuSeg/Training/GroundTruth/",
   "TEST_PATH_IMAGES" : "./Datasets/MonuSeg/Test/TissueImages/*",

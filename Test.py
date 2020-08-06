@@ -31,10 +31,10 @@ if config['Model']=="DEEPLAB":
 image = img_to_array(load_img(config['sample_test_image'], color_mode='rgb', target_size=[config['im_width'],config['im_height']]))/255.0
 mask = img_to_array(load_img(config['sample_test_mask'], color_mode='grayscale', target_size=[config['im_width'],config['im_height']]))/255.0
 
-image = cv2.resize(image, (256, 256)) 
-image = image.reshape(1,256,256,3)
+#image = cv2.resize(image, (256, 256)) 
+image = image.reshape(1,1000,1000,3)
 pred = model.predict(image)
-pred = pred.reshape(256,256,1)
+pred = pred.reshape(1000,1000,1)
 img_array = img_to_array(pred)
 # save the image with a new filename
 
