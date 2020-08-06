@@ -202,7 +202,7 @@ def _conv(**conv_params):
 class BilinearUpSampling2D(Layer):
     """Upsampling2D with bilinear interpolation."""
 
-    def __init__(self, target_shape=None,factor=None, data_format=None, **kwargs):
+    def __init__(self, target_shape=None,factor=16, data_format=None, **kwargs):
         if data_format is None:
             data_format = K.image_data_format()
         assert data_format in {

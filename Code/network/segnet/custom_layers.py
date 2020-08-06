@@ -4,7 +4,7 @@ import keras.backend as K
 import tensorflow as tf
 
 class MaxPoolingWithIndices(Layer):
-    def __init__(self, pool_size,strides,padding='SAME',**kwargs):
+    def __init__(self, pool_size=2,strides=2,padding='SAME',**kwargs):
         super(MaxPoolingWithIndices, self).__init__(**kwargs)
         self.pool_size=pool_size
         self.strides=strides

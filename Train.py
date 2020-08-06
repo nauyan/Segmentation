@@ -22,7 +22,7 @@ import tensorflow as tf
 from skimage.util.shape import view_as_windows
 import json
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 
 with open('./config.json') as config_file:
