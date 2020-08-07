@@ -221,24 +221,4 @@ plt.ylabel("accuracy")
 plt.legend();
 plt.savefig('./Results/plots/'+str(config['Model'])+'/train_accuracy.png')
 
-"""
-plt.figure(figsize=(8, 8))
-plt.title("Learning curve")
-plt.plot(results.history["acc"], label="acc")
-plt.plot(results.history["val_acc"], label="val_acc")
-plt.plot( np.argmax(results.history["val_acc"]), np.max(results.history["val_acc"]), marker="x", color="r", label="best model")
-plt.xlabel("Epochs")
-plt.ylabel("Accuracy")
-plt.legend();
-plt.savefig('./train_acc.png')
 
-plt.figure(figsize=(8, 8))
-plt.title("Learning curve")
-plt.plot(results.history["f1_m"], label="f1_m")
-plt.plot(results.history["val_f1_m"], label="val_f1_m")
-plt.plot( np.argmax(results.history["val_f1_m"]), np.max(results.history["val_f1_m"]), marker="x", color="r", label="best model")
-plt.xlabel("Epochs")
-plt.ylabel("F1-Score")
-plt.legend();
-plt.savefig('./train_F1.png')
-"""
